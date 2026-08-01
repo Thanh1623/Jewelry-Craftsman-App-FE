@@ -3,13 +3,6 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 
 import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { urlPaths } from "@/constants/urlPaths"
 
@@ -37,18 +30,16 @@ export function RequestsListPage() {
   )
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Yêu cầu tư vấn</CardTitle>
-        <CardDescription>
-          Danh sách câu hỏi khách hàng gửi từ shop, cần thợ trả lời.
-        </CardDescription>
-        <div className="mt-2 flex gap-2">
+    <div className="flex flex-col gap-3">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h1 className="text-base font-semibold">Yêu cầu từ shop</h1>
+        <div className="flex gap-1.5">
           {STATUS_TABS.map((tab) => (
             <Button
               key={tab}
               type="button"
               size="sm"
+              className="h-7 text-xs"
               variant={status === tab ? "default" : "outline"}
               onClick={() => setStatus(tab)}
             >
@@ -56,25 +47,23 @@ export function RequestsListPage() {
             </Button>
           ))}
         </div>
-      </CardHeader>
-      <CardContent className="flex flex-col gap-2">
+      </div>
+
+      <div className="flex flex-col gap-1.5">
         {isPending && (
           <>
-            <Skeleton className="h-20 w-full" />
-            <Skeleton className="h-20 w-full" />
-            <Skeleton className="h-20 w-full" />
+            <Skeleton className="h-16 w-full" />
+            <Skeleton className="h-16 w-full" />
           </>
         )}
 
         {isError && (
-          <p className="text-sm text-destructive">
-            Không thể tải danh sách yêu cầu. Vui lòng thử lại.
-          </p>
+          <p className="text-sm text-destructive">Không tải được yêu cầu.</p>
         )}
 
         {!isPending && !isError && data?.data.length === 0 && (
-          <p className="py-6 text-center text-sm text-muted-foreground">
-            Không có yêu cầu nào ở trạng thái này.
+          <p className="border border-dashed border-border py-6 text-center text-sm text-muted-foreground">
+            Không có yêu cầu.
           </p>
         )}
 
@@ -83,23 +72,29 @@ export function RequestsListPage() {
             key={request.id}
             type="button"
             onClick={() => navigate(urlPaths.requestDetail(request.id))}
-            className="flex flex-col gap-2 rounded-2xl border border-border bg-card p-4 text-left transition-colors hover:bg-accent/60 sm:flex-row sm:items-center sm:justify-between"
+            className="flex items-center gap-2 border border-border bg-card p-2.5 text-left hover:bg-muted/40"
           >
-            <div className="flex flex-col gap-1">
-              <span className="font-medium">{request.productName}</span>
-              <span className="line-clamp-1 text-sm text-muted-foreground">
-                {request.question}
-              </span>
-              <span className="text-xs text-muted-foreground">
-                {formatWeightGrams(request.productWeightGrams)} · Công thợ{" "}
-                {formatVnd(request.productLaborCost)} ·{" "}
+            {request.productImageUrl ? (
+              <img
+                src={request.productImageUrl}
+                alt={request.productName}
+                className="size-12 shrink-0 object-cover"
+              />
+            ) : (
+              <div className="size-12 shrink-0 bg-muted" />
+            )}
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-medium">{request.productName}</p>
+              <p className="line-clamp-1 text-xs text-muted-foreground">{request.question}</p>
+              <p className="text-[11px] text-muted-foreground">
+                {formatWeightGrams(request.productWeightGrams)} · {formatVnd(request.productLaborCost)} ·{" "}
                 {formatDateTime(request.createdAt)}
-              </span>
+              </p>
             </div>
             <RequestStatusBadge status={request.status} />
           </button>
         ))}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }

@@ -32,7 +32,8 @@ async function enablePushNotifications(): Promise<boolean> {
 
   const subscription = await registration.pushManager.subscribe({
     userVisibleOnly: true,
-    applicationServerKey: urlBase64ToUint8Array(publicKey),
+    // TS DOM lib vs Uint8Array generic mismatch on newer TypeScript
+    applicationServerKey: urlBase64ToUint8Array(publicKey) as BufferSource,
   })
 
   const { endpoint, keys } = subscription.toJSON() as {

@@ -12,7 +12,6 @@ import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -27,6 +26,8 @@ import {
 import { Input } from "@/components/ui/input"
 import { urlPaths } from "@/constants/urlPaths"
 
+const showDemoHints = import.meta.env.DEV
+
 export function LoginPage() {
   const loginMutation = useLoginMutation()
 
@@ -40,21 +41,13 @@ export function LoginPage() {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Đăng nhập</CardTitle>
-        <CardDescription>Nhập email và mật khẩu để tiếp tục.</CardDescription>
-        <p className="rounded-2xl border border-border bg-muted/40 px-3 py-2 text-xs text-muted-foreground">
-          Tài khoản demo: <span className="font-medium">tho@jewelry.local</span> /{" "}
-          <span className="font-medium">Tho123456!</span>
-        </p>
+    <Card className="border-border shadow-none">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-lg">Đăng nhập · Thợ</CardTitle>
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="flex flex-col gap-4"
-          >
+          <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-3">
             <FormField
               control={form.control}
               name="email"
@@ -62,18 +55,12 @@ export function LoginPage() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input
-                      type="email"
-                      placeholder="you@example.com"
-                      autoComplete="email"
-                      {...field}
-                    />
+                    <Input type="email" autoComplete="email" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="password"
@@ -81,33 +68,27 @@ export function LoginPage() {
                 <FormItem>
                   <FormLabel>Mật khẩu</FormLabel>
                   <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="••••••"
-                      autoComplete="current-password"
-                      {...field}
-                    />
+                    <Input type="password" autoComplete="current-password" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-
             <Button type="submit" disabled={loginMutation.isPending}>
               {loginMutation.isPending ? "Đang đăng nhập..." : "Đăng nhập"}
             </Button>
           </form>
         </Form>
 
-        <Button asChild variant="link" className="mt-4 px-0">
-          <Link to={urlPaths.register}>Chưa có tài khoản? Đăng ký</Link>
+        <Button asChild variant="link" className="mt-2 h-auto px-0 text-xs">
+          <Link to={urlPaths.register}>Đăng ký</Link>
         </Button>
 
-        <div className="mt-4 rounded-2xl bg-muted/60 p-3 text-xs text-muted-foreground">
-          <p className="font-medium text-foreground">Tài khoản demo</p>
-          <p>Thợ: tho@jewelry.local / Tho123456!</p>
-          <p>Bật thông báo sau khi đăng nhập để nhận yêu cầu mới (Web Push).</p>
-        </div>
+        {showDemoHints && (
+          <p className="mt-2 text-xs text-muted-foreground">
+            Demo: tho@jewelry.local / Tho123456!
+          </p>
+        )}
       </CardContent>
     </Card>
   )

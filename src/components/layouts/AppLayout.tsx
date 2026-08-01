@@ -14,26 +14,22 @@ export function AppLayout() {
   useQuery(meQueryOptions(!!accessToken))
 
   return (
-    <div className="min-h-svh bg-background">
+    <div className="min-h-svh">
       <header className="border-b border-border bg-card">
-        <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-3 px-6 py-4">
-          <div className="flex flex-col">
-            <span className="text-lg font-semibold">
-              Xưởng chế tác trang sức
-            </span>
-            <span className="text-xs text-muted-foreground">
-              {user?.fullName ?? user?.email}
-            </span>
+        <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-between gap-2 px-4 py-2.5">
+          <div>
+            <p className="text-sm font-semibold">Xưởng Bạc Ý</p>
+            <p className="text-xs text-muted-foreground">{user?.fullName ?? user?.email}</p>
           </div>
           <div className="flex items-center gap-2">
             <PushSubscribeButton />
-            <Button variant="outline" size="sm" onClick={logout}>
+            <Button variant="outline" size="sm" className="h-7 text-xs" onClick={logout}>
               Đăng xuất
             </Button>
           </div>
         </div>
       </header>
-      <main className="mx-auto w-full max-w-7xl p-6">
+      <main className="mx-auto w-full max-w-5xl px-4 py-3">
         <Outlet />
       </main>
     </div>

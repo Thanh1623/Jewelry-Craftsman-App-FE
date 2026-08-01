@@ -91,95 +91,91 @@ export function RequestDetailPage() {
   const isAnswered = request.status === REQUEST_STATUS.ANSWERED
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-3">
       <Button
         variant="ghost"
         size="sm"
-        className="w-fit"
+        className="h-7 w-fit px-0 text-xs"
         onClick={() => navigate(urlPaths.home)}
       >
-        ← Quay lại danh sách
+        ← Danh sách
       </Button>
 
-      <Card>
-        <CardHeader>
+      <Card className="shadow-none">
+        <CardHeader className="pb-2">
           <div className="flex items-start justify-between gap-2">
-            <CardTitle>{request.productName}</CardTitle>
+            <CardTitle className="text-base">{request.productName}</CardTitle>
             <RequestStatusBadge status={request.status} />
           </div>
-          <CardDescription>
-            Gửi lúc {formatDateTime(request.createdAt)}
+          <CardDescription className="text-xs">
+            {formatDateTime(request.createdAt)}
           </CardDescription>
         </CardHeader>
-        <CardContent className="flex flex-col gap-4">
-          <dl className="grid grid-cols-2 gap-3 rounded-2xl border border-border bg-muted/40 p-4 text-sm sm:grid-cols-3">
-            <div>
-              <dt className="text-muted-foreground">Trọng lượng</dt>
-              <dd className="font-medium">
-                {formatWeightGrams(request.productWeightGrams)}
-              </dd>
+        <CardContent className="flex flex-col gap-3">
+          {(request.productImageUrl || request.referenceImageUrl) && (
+            <div className="grid grid-cols-2 gap-2">
+              {request.productImageUrl && (
+                <div className="overflow-hidden border border-border">
+                  <p className="bg-muted px-2 py-1 text-[11px] text-muted-foreground">SP</p>
+                  <img
+                    src={request.productImageUrl}
+                    alt={request.productName}
+                    className="aspect-square w-full object-cover"
+                  />
+                </div>
+              )}
+              {request.referenceImageUrl && (
+                <div className="overflow-hidden border border-border">
+                  <p className="bg-muted px-2 py-1 text-[11px] text-muted-foreground">
+                    Tham chiếu
+                  </p>
+                  <img
+                    src={request.referenceImageUrl}
+                    alt="Ảnh tham chiếu"
+                    className="aspect-square w-full object-cover"
+                  />
+                </div>
+              )}
             </div>
-            <div>
-              <dt className="text-muted-foreground">Công thợ</dt>
-              <dd className="font-medium">
-                {formatVnd(request.productLaborCost)}
-              </dd>
-            </div>
-            {request.productBaseSize !== null && (
-              <div>
-                <dt className="text-muted-foreground">Size nền</dt>
-                <dd className="font-medium">{request.productBaseSize}</dd>
-              </div>
-            )}
-          </dl>
+          )}
 
-          <div className="flex flex-col gap-1">
-            <span className="text-sm font-medium text-muted-foreground">
-              Câu hỏi của khách hàng
-            </span>
-            <p className="rounded-2xl border border-border p-3 text-sm">
-              {request.question}
-            </p>
+          <p className="text-xs text-muted-foreground">
+            {formatWeightGrams(request.productWeightGrams)} · Công {formatVnd(request.productLaborCost)}
+            {request.productBaseSize !== null ? ` · Size ${request.productBaseSize}` : ""}
+          </p>
+
+          <div>
+            <p className="mb-1 text-xs font-medium text-muted-foreground">Câu hỏi</p>
+            <p className="border border-border p-2 text-sm">{request.question}</p>
           </div>
 
           {request.customerNote && (
-            <div className="flex flex-col gap-1">
-              <span className="text-sm font-medium text-muted-foreground">
-                Ghi chú thêm
-              </span>
-              <p className="rounded-2xl border border-border p-3 text-sm">
-                {request.customerNote}
-              </p>
+            <div>
+              <p className="mb-1 text-xs font-medium text-muted-foreground">Ghi chú sale</p>
+              <p className="border border-border p-2 text-sm">{request.customerNote}</p>
             </div>
           )}
 
           {isAnswered ? (
-            <div className="flex flex-col gap-1">
-              <span className="text-sm font-medium text-muted-foreground">
-                Câu trả lời
-                {request.answeredAt &&
-                  ` · ${formatDateTime(request.answeredAt)}`}
-              </span>
-              <p className="rounded-2xl border border-primary/30 bg-primary/5 p-3 text-sm">
-                {request.answer}
+            <div>
+              <p className="mb-1 text-xs font-medium text-muted-foreground">
+                Trả lời{request.answeredAt ? ` · ${formatDateTime(request.answeredAt)}` : ""}
               </p>
+              <p className="border border-border bg-muted/40 p-2 text-sm">{request.answer}</p>
             </div>
           ) : (
             <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="flex flex-col gap-3"
-              >
+              <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-2">
                 <FormField
                   control={form.control}
                   name="answer"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Câu trả lời</FormLabel>
+                      <FormLabel>Trả lời</FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder="Nhập câu trả lời cho khách hàng..."
-                          className="min-h-32"
+                          placeholder="Nhập câu trả lời..."
+                          className="min-h-24"
                           {...field}
                         />
                       </FormControl>
@@ -187,15 +183,8 @@ export function RequestDetailPage() {
                     </FormItem>
                   )}
                 />
-
-                <Button
-                  type="submit"
-                  className="w-fit"
-                  disabled={answerMutation.isPending}
-                >
-                  {answerMutation.isPending
-                    ? "Đang gửi..."
-                    : "Gửi câu trả lời"}
+                <Button type="submit" className="w-fit" disabled={answerMutation.isPending}>
+                  {answerMutation.isPending ? "Đang gửi..." : "Gửi"}
                 </Button>
               </form>
             </Form>

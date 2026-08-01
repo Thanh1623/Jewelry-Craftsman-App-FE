@@ -14,6 +14,8 @@ export interface CraftsmanRequest {
   productWeightGrams: number
   productLaborCost: number
   productBaseSize: number | null
+  productImageUrl: string | null
+  referenceImageUrl: string | null
   question: string
   customerNote: string | null
   status: RequestStatus
