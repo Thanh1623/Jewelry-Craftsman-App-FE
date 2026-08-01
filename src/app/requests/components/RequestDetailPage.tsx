@@ -19,6 +19,7 @@ import { getApiErrorMessage } from "@/lib/get-api-error-message"
 import { useAuthStore } from "@/stores/auth-store"
 
 import { usePostRequestMessageMutation } from "../hooks/use-post-request-message-mutation"
+import { useUpdateRequestStatusMutation } from "../hooks/use-update-request-status-mutation"
 import { requestDetailQueryOptions } from "../queries/request.queries"
 import { uploadImageRequest } from "../services/request.service"
 import {
@@ -101,6 +102,7 @@ export function RequestDetailPage() {
     requestDetailQueryOptions(requestId ?? "")
   )
   const postMessageMutation = usePostRequestMessageMutation(requestId ?? "")
+  const claimMutation = useUpdateRequestStatusMutation(requestId ?? "")
 
   const messages = request?.messages ?? []
 
@@ -215,6 +217,17 @@ export function RequestDetailPage() {
               {request.productName}
             </p>
             <RequestStatusBadge status={request.status} />
+            {request.status === REQUEST_STATUS.PENDING && (
+              <Button
+                type="button"
+                size="sm"
+                className="h-7 rounded-full bg-amber-600 px-2.5 text-[11px] hover:bg-amber-700"
+                disabled={claimMutation.isPending}
+                onClick={() => claimMutation.mutate(REQUEST_STATUS.IN_PROGRESS)}
+              >
+                Nhận việc
+              </Button>
+            )}
           </div>
           <p className="truncate text-[11px] text-stone-500">
             {formatWeightGrams(request.productWeightGrams)} · Công{" "}

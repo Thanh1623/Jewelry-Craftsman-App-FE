@@ -1,8 +1,9 @@
 import type { RequestStatus } from "../types/request.types"
 
 export const REQUEST_STATUS_LABEL: Record<RequestStatus, string> = {
-  PENDING: "Chờ trả lời",
-  ANSWERED: "Đã trả lời",
+  PENDING: "Chờ nhận",
+  IN_PROGRESS: "Đang làm",
+  ANSWERED: "Hoàn thành",
 }
 
 export function formatWeightGrams(grams: number): string {

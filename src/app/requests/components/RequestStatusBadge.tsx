@@ -10,15 +10,13 @@ export interface RequestStatusBadgeProps {
 }
 
 export function RequestStatusBadge({ status, className }: RequestStatusBadgeProps) {
-  const pending = status === "PENDING"
-
   return (
     <Badge
       className={cn(
         "h-5 rounded-full border-0 px-2 text-[10px] font-medium",
-        pending
-          ? "bg-amber-100 text-amber-800 hover:bg-amber-100"
-          : "bg-stone-200/80 text-stone-600 hover:bg-stone-200/80",
+        status === "PENDING" && "bg-amber-100 text-amber-800 hover:bg-amber-100",
+        status === "IN_PROGRESS" && "bg-sky-100 text-sky-800 hover:bg-sky-100",
+        status === "ANSWERED" && "bg-stone-200/80 text-stone-600 hover:bg-stone-200/80",
         className
       )}
     >

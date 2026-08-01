@@ -8,6 +8,7 @@ import type {
   ListRequestsParams,
   ListRequestsResponse,
   PostRequestMessagePayload,
+  RequestStatus,
 } from "../types/request.types"
 
 export async function fetchRequestsRequest(
@@ -47,6 +48,17 @@ export async function postRequestMessageRequest(
   const { data } = await httpService.post<AnswerRequestResponse>(
     apiPaths.requestMessages(requestId),
     payload
+  )
+  return data
+}
+
+export async function updateRequestStatusRequest(
+  requestId: string,
+  status: RequestStatus
+): Promise<CraftsmanRequest> {
+  const { data } = await httpService.patch<CraftsmanRequest>(
+    apiPaths.requestStatus(requestId),
+    { status }
   )
   return data
 }

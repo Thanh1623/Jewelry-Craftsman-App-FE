@@ -1,5 +1,6 @@
 export const REQUEST_STATUS = {
   PENDING: "PENDING",
+  IN_PROGRESS: "IN_PROGRESS",
   ANSWERED: "ANSWERED",
 } as const
 
