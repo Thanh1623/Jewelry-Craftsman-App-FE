@@ -11,7 +11,10 @@ export function requestsListQueryOptions(params: ListRequestsParams) {
   return queryOptions({
     queryKey: requestKeys.list(params),
     queryFn: () => fetchRequestsRequest(params),
-    staleTime: 15_000,
+    // ponytail: shop→craftsman has no shared socket; poll so PENDING appears without manual refresh
+    staleTime: 5_000,
+    refetchInterval: 5_000,
+    refetchOnWindowFocus: true,
   })
 }
 
@@ -20,5 +23,7 @@ export function requestDetailQueryOptions(requestId: string) {
     queryKey: requestKeys.detail(requestId),
     queryFn: () => fetchRequestByIdRequest(requestId),
     enabled: !!requestId,
+    // ponytail: keep thread fresh while chatting
+    refetchInterval: 8_000,
   })
 }

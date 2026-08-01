@@ -7,7 +7,10 @@ import {
   fetchVapidPublicKeyRequest,
   subscribePushRequest,
 } from "../services/push.service"
-import { urlBase64ToUint8Array } from "../utils/url-base64-to-uint8array"
+import {
+  arrayBufferToUrlBase64,
+  urlBase64ToUint8Array,
+} from "../utils/url-base64-to-uint8array"
 
 async function enablePushNotifications(): Promise<boolean> {
   if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
@@ -30,15 +33,30 @@ async function enablePushNotifications(): Promise<boolean> {
   const registration = await navigator.serviceWorker.register("/sw.js")
   await navigator.serviceWorker.ready
 
+  const existing = await registration.pushManager.getSubscription()
+  if (existing) {
+    await existing.unsubscribe().catch(() => undefined)
+  }
+
+  const applicationServerKey = urlBase64ToUint8Array(publicKey)
   const subscription = await registration.pushManager.subscribe({
     userVisibleOnly: true,
-    // TS DOM lib vs Uint8Array generic mismatch on newer TypeScript
-    applicationServerKey: urlBase64ToUint8Array(publicKey) as BufferSource,
+    applicationServerKey: applicationServerKey.buffer.slice(
+      applicationServerKey.byteOffset,
+      applicationServerKey.byteOffset + applicationServerKey.byteLength
+    ) as ArrayBuffer,
   })
 
-  const { endpoint, keys } = subscription.toJSON() as {
-    endpoint: string
-    keys: { p256dh: string; auth: string }
+  const endpoint = subscription.endpoint
+  const p256dhBuffer = subscription.getKey("p256dh")
+  const authBuffer = subscription.getKey("auth")
+  if (!endpoint || !p256dhBuffer || !authBuffer) {
+    throw new Error("Trình duyệt không trả về khóa push hợp lệ.")
+  }
+
+  const keys = {
+    p256dh: arrayBufferToUrlBase64(p256dhBuffer),
+    auth: arrayBufferToUrlBase64(authBuffer),
   }
 
   await subscribePushRequest({ endpoint, keys })

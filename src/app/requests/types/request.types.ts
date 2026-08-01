@@ -5,6 +5,24 @@ export const REQUEST_STATUS = {
 
 export type RequestStatus = (typeof REQUEST_STATUS)[keyof typeof REQUEST_STATUS]
 
+export const MESSAGE_SENDER = {
+  SHOP: "SHOP",
+  CRAFTSMAN: "CRAFTSMAN",
+} as const
+
+export type RequestMessageSender =
+  (typeof MESSAGE_SENDER)[keyof typeof MESSAGE_SENDER]
+
+export interface RequestMessage {
+  id: string
+  requestId: string
+  senderId: string | null
+  sender: RequestMessageSender
+  content: string
+  imageUrl: string | null
+  createdAt: string
+}
+
 export interface CraftsmanRequest {
   id: string
   shopRequestId: string
@@ -24,6 +42,7 @@ export interface CraftsmanRequest {
   answeredAt: string | null
   createdAt: string
   updatedAt: string
+  messages?: RequestMessage[]
 }
 
 export interface PaginatedMeta {
@@ -48,6 +67,13 @@ export interface AnswerRequestPayload {
   answer: string
 }
 
+export interface PostRequestMessagePayload {
+  content?: string
+  imageUrl?: string
+  sendToShop?: boolean
+}
+
 export interface AnswerRequestResponse extends CraftsmanRequest {
   warning?: string
+  messages: RequestMessage[]
 }
