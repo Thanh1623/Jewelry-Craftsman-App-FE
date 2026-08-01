@@ -1,0 +1,16 @@
+{
+  "name": "Jewelry Craftsman",
+  "short_name": "Craftsman",
+  "description": "Ứng dụng dành cho thợ kim hoàn trả lời yêu cầu tư vấn từ khách hàng.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1c1917",
+  "theme_color": "#b45309",
+  "icons": [
+    {
+      "src": "/vite.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
